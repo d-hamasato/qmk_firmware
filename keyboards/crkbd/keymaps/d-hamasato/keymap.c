@@ -194,7 +194,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         if (lower_pressed && (TIMER_DIFF_16(record->event.time, lower_pressed_time) < TAPPING_TERM)) {
           register_code(KC_LANG2);
+          register_code(KC_MHEN);
           unregister_code(KC_LANG2);
+          unregister_code(KC_MHEN);
         }
         lower_pressed = false;
       }
@@ -213,7 +215,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         if (raise_pressed && (TIMER_DIFF_16(record->event.time, raise_pressed_time) < TAPPING_TERM)) {
           register_code(KC_LANG1);
+          register_code(KC_HENK);
           unregister_code(KC_LANG1);
+          unregister_code(KC_HENK);
         }
         raise_pressed = false;
       }
