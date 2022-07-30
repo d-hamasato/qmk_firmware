@@ -19,6 +19,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 #include <stdio.h>
 
+enum custom_keycodes {
+  M_WIN_L = SAFE_RANGE,
+  M_WIN_B,
+  M_WIN_T,
+  M_WIN_R,
+  M_WIN_F,
+  M_WINL23,
+  M_WINR23,
+  M_WINL13,
+  M_WINC13,
+  M_WINR13,
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -26,7 +39,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN, KC_QUOT,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,  KC_ESC,
+      KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, RSFT_T(KC_ESC),
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_LGUI,   MO(1),  KC_SPC,     KC_ENT,   MO(2), KC_RALT
                                       //`--------------------------'  `--------------------------'
@@ -59,13 +72,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [3] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, KC_MUTE, KC_VOLD, KC_VOLU,
+      QK_BOOT, RGB_HUD,M_WINL23, XXXXXXX,M_WINR23, RGB_HUI,                      XXXXXXX, XXXXXXX, XXXXXXX, KC_MUTE, KC_VOLD, KC_VOLU,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      RGB_TOG, RGB_HUI, RGB_SAI, RGB_VAI, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      RGB_TOG, RGB_SAD,M_WINL13,M_WINC13,M_WINR13, RGB_SAI,                      M_WIN_L, M_WIN_B, M_WIN_T, M_WIN_R, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_CAPS,
+      RGB_MOD, RGB_VAD, XXXXXXX, XXXXXXX, XXXXXXX, RGB_VAI,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LGUI, _______,  KC_SPC,     KC_ENT, _______, KC_RALT
+                                          KC_LGUI, _______,  KC_SPC,    M_WIN_F, _______, KC_RALT
                                       //`--------------------------'  `--------------------------'
   )
 };
@@ -179,6 +192,17 @@ static bool raise_pressed = false;
 static uint16_t lower_pressed_time = 0;
 static uint16_t raise_pressed_time = 0;
 
+void register_code_to_adjust_window(uint16_t keycode) {
+  register_code(KC_LCTL);
+  register_code(KC_RALT);
+  register_code(keycode);
+}
+void unregister_code_to_adjust_window(uint16_t keycode) {
+  unregister_code(KC_LCTL);
+  unregister_code(KC_RALT);
+  unregister_code(keycode);
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case MO(1):
@@ -222,6 +246,76 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         raise_pressed = false;
       }
       return false;
+      break;
+    case M_WIN_L:
+      if (record->event.pressed) {
+        register_code_to_adjust_window(KC_LEFT);
+      } else {
+        unregister_code_to_adjust_window(KC_LEFT);
+      }
+      break;
+    case M_WIN_B:
+      if (record->event.pressed) {
+        register_code_to_adjust_window(KC_DOWN);
+      } else {
+        unregister_code_to_adjust_window(KC_DOWN);
+      }
+      break;
+    case M_WIN_T:
+      if (record->event.pressed) {
+        register_code_to_adjust_window(KC_UP);
+      } else {
+        unregister_code_to_adjust_window(KC_UP);
+      }
+      break;
+    case M_WIN_R:
+      if (record->event.pressed) {
+        register_code_to_adjust_window(KC_RIGHT);
+      } else {
+        unregister_code_to_adjust_window(KC_RIGHT);
+      }
+      break;
+    case M_WIN_F:
+      if (record->event.pressed) {
+        register_code_to_adjust_window(KC_ENT);
+      } else {
+        unregister_code_to_adjust_window(KC_ENT);
+      }
+      break;
+    case M_WINL23:
+      if (record->event.pressed) {
+        register_code_to_adjust_window(KC_E);
+      } else {
+        unregister_code_to_adjust_window(KC_E);
+      }
+      break;
+    case M_WINR23:
+      if (record->event.pressed) {
+        register_code_to_adjust_window(KC_T);
+      } else {
+        unregister_code_to_adjust_window(KC_T);
+      }
+      break;
+    case M_WINL13:
+      if (record->event.pressed) {
+        register_code_to_adjust_window(KC_D);
+      } else {
+        unregister_code_to_adjust_window(KC_D);
+      }
+      break;
+    case M_WINC13:
+      if (record->event.pressed) {
+        register_code_to_adjust_window(KC_F);
+      } else {
+        unregister_code_to_adjust_window(KC_F);
+      }
+      break;
+    case M_WINR13:
+      if (record->event.pressed) {
+        register_code_to_adjust_window(KC_G);
+      } else {
+        unregister_code_to_adjust_window(KC_G);
+      }
       break;
     default:
       if (record->event.pressed) {
