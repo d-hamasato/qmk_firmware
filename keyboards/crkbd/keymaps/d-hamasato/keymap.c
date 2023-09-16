@@ -19,29 +19,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 #include <stdio.h>
 
-enum custom_keycodes {
-  M_WIN_L = SAFE_RANGE,
-  M_WIN_B,
-  M_WIN_T,
-  M_WIN_R,
-  M_WIN_F,
-  M_WINL23,
-  M_WINR23,
-  M_WINL13,
-  M_WINC13,
-  M_WINR13,
-};
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-       KC_TAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  KC_BSPC,
+       KC_TAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  KC_ESC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN, KC_QUOT,
+LCTL_T(KC_TAB),   KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN, KC_BSPC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, RSFT_T(KC_ESC),
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LGUI,   MO(1),  KC_SPC,     KC_ENT,   MO(2), KC_RALT
+                                        GUI_T(KC_BSPC),MO(1),GUI_T(KC_SPC), ALT_T(KC_ENT),   MO(2), KC_RALT
                                       //`--------------------------'  `--------------------------'
 
   ),
@@ -62,23 +49,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
        KC_TAB, KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,                      KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      KC_MINS,  KC_EQL, KC_LBRC, KC_RBRC, KC_BSLS,  KC_GRV,
+      KC_LCTL, XXXXXXX, XXXXXXX, XXXXXXX, KC_QUOT, KC_GRV ,                      KC_MINS,  KC_EQL, KC_LBRC, KC_RBRC, KC_BSLS,  KC_GRV,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE, KC_TILD,
+      KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, KC_DQT , KC_TILD,                      KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE, KC_TILD,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LGUI,   MO(3),  KC_SPC,     KC_ENT, _______, KC_RALT
+                                          KC_DEL ,   MO(3),  KC_SPC,     KC_ENT, _______, KC_RALT
                                       //`--------------------------'  `--------------------------'
   ),
 
   [3] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      QK_BOOT, RGB_HUD,M_WINL23, XXXXXXX,M_WINR23, RGB_HUI,                      XXXXXXX, XXXXXXX, XXXXXXX, KC_MUTE, KC_VOLD, KC_VOLU,
+      QK_BOOT, RGB_HUD,LCA(KC_E),LCA(KC_R),LCA(KC_T),RGB_HUI,                    XXXXXXX, XXXXXXX, XXXXXXX, KC_MUTE, KC_VOLD, KC_VOLU,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      RGB_TOG, RGB_SAD,M_WINL13,M_WINC13,M_WINR13, RGB_SAI,                      M_WIN_L, M_WIN_B, M_WIN_T, M_WIN_R, XXXXXXX, XXXXXXX,
+      RGB_TOG, RGB_SAD,LCA(KC_D),LCA(KC_F),LCA(KC_G),RGB_SAI,                    LCA(KC_LEFT),LCA(KC_DOWN),LCA(KC_UP),LCA(KC_RIGHT), XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       RGB_MOD, RGB_VAD, XXXXXXX, XXXXXXX, XXXXXXX, RGB_VAI,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LGUI, _______,  KC_SPC,    M_WIN_F, _______, KC_RALT
+                                          KC_LGUI, _______,  KC_SPC, LCA(KC_ENT),_______, KC_RALT
                                       //`--------------------------'  `--------------------------'
   )
 };
@@ -180,28 +167,10 @@ bool oled_task_user(void) {
     return false;
 }
 
-enum layers {
-  _DEFAULT,
-  _LOWER,
-  _RAISE,
-  _ADJUST,
-};
-
 static bool lower_pressed = false;
 static bool raise_pressed = false;
 static uint16_t lower_pressed_time = 0;
 static uint16_t raise_pressed_time = 0;
-
-void register_code_to_adjust_window(uint16_t keycode) {
-  register_code(KC_LCTL);
-  register_code(KC_RALT);
-  register_code(keycode);
-}
-void unregister_code_to_adjust_window(uint16_t keycode) {
-  unregister_code(KC_LCTL);
-  unregister_code(KC_RALT);
-  unregister_code(keycode);
-}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
@@ -210,17 +179,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         lower_pressed = true;
         lower_pressed_time = record->event.time;
 
-        layer_on(_LOWER);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+        layer_on(1);
+        update_tri_layer(1, 2, 3);
       } else {
         layer_off(1);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+        update_tri_layer(1, 2, 3);
 
         if (lower_pressed && (TIMER_DIFF_16(record->event.time, lower_pressed_time) < TAPPING_TERM)) {
-          register_code(KC_LNG2);
-          register_code(KC_INT5); // JIS 無変換
-          unregister_code(KC_LNG2);
-          unregister_code(KC_INT5);
+          tap_code(KC_LNG2);
         }
         lower_pressed = false;
       }
@@ -231,91 +197,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         raise_pressed = true;
         raise_pressed_time = record->event.time;
 
-        layer_on(_RAISE);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+        layer_on(2);
+        update_tri_layer(1, 2, 3);
       } else {
-        layer_off(_RAISE);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+        layer_off(2);
+        update_tri_layer(1, 2, 3);
 
         if (raise_pressed && (TIMER_DIFF_16(record->event.time, raise_pressed_time) < TAPPING_TERM)) {
-          register_code(KC_LNG1);
-          register_code(KC_INT4); // JIS 変換
-          unregister_code(KC_LNG1);
-          unregister_code(KC_INT4);
+          tap_code(KC_LNG1);
         }
         raise_pressed = false;
       }
       return false;
-      break;
-    case M_WIN_L:
-      if (record->event.pressed) {
-        register_code_to_adjust_window(KC_LEFT);
-      } else {
-        unregister_code_to_adjust_window(KC_LEFT);
-      }
-      break;
-    case M_WIN_B:
-      if (record->event.pressed) {
-        register_code_to_adjust_window(KC_DOWN);
-      } else {
-        unregister_code_to_adjust_window(KC_DOWN);
-      }
-      break;
-    case M_WIN_T:
-      if (record->event.pressed) {
-        register_code_to_adjust_window(KC_UP);
-      } else {
-        unregister_code_to_adjust_window(KC_UP);
-      }
-      break;
-    case M_WIN_R:
-      if (record->event.pressed) {
-        register_code_to_adjust_window(KC_RIGHT);
-      } else {
-        unregister_code_to_adjust_window(KC_RIGHT);
-      }
-      break;
-    case M_WIN_F:
-      if (record->event.pressed) {
-        register_code_to_adjust_window(KC_ENT);
-      } else {
-        unregister_code_to_adjust_window(KC_ENT);
-      }
-      break;
-    case M_WINL23:
-      if (record->event.pressed) {
-        register_code_to_adjust_window(KC_E);
-      } else {
-        unregister_code_to_adjust_window(KC_E);
-      }
-      break;
-    case M_WINR23:
-      if (record->event.pressed) {
-        register_code_to_adjust_window(KC_T);
-      } else {
-        unregister_code_to_adjust_window(KC_T);
-      }
-      break;
-    case M_WINL13:
-      if (record->event.pressed) {
-        register_code_to_adjust_window(KC_D);
-      } else {
-        unregister_code_to_adjust_window(KC_D);
-      }
-      break;
-    case M_WINC13:
-      if (record->event.pressed) {
-        register_code_to_adjust_window(KC_F);
-      } else {
-        unregister_code_to_adjust_window(KC_F);
-      }
-      break;
-    case M_WINR13:
-      if (record->event.pressed) {
-        register_code_to_adjust_window(KC_G);
-      } else {
-        unregister_code_to_adjust_window(KC_G);
-      }
       break;
     default:
       if (record->event.pressed) {
